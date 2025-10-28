@@ -1,0 +1,17 @@
+flowchart TD
+    A[Complete User Journey] --> B{User Type?}
+    B -->|Buyer| C[Browse/Search Services]
+    B -->|Seller| D[Create Service Profile]
+    
+    C --> E[Get Immediate Help]
+    E --> F[System Finds Providers]
+    F --> G[Pay via Escrow]
+    G --> H[Service Performed]
+    H --> I[Confirm & Rate]
+    
+    D --> J[Collect Vouches]
+    J --> K[Reach Trust Threshold]
+    K --> L[Service Activated]
+    L --> M[Receive Job Offers]
+    M --> N[Accept & Complete Work]
+    N --> O[Get Paid]

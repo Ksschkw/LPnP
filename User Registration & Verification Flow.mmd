@@ -1,0 +1,11 @@
+flowchart TD
+    A[Start Registration] --> B[Fill Registration Form]
+    B --> C[System Sends OTP]
+    C --> D{Enter OTP Correctly?}
+    D -->|Yes| E[Phone Verified<br>User Level 0]
+    D -->|No| C
+    E --> F{Submit NIN?}
+    F -->|Yes| G[Submit NIN Form]
+    G --> H[NIN Hash Stored<br>User Level 1]
+    F -->|No| E
+    H --> I[Can Create Services]

@@ -1,0 +1,39 @@
+@startuml
+left to right direction
+
+actor Buyer
+actor Seller
+actor Admin
+
+rectangle "Locale System" {
+    Buyer --> (User Registration)
+    Buyer --> (Phone Verification)
+    Buyer --> (NIN Verification)
+    Buyer --> (Browse Services)
+    Buyer --> (Request Immediate Help)
+    Buyer --> (Schedule Service)
+    Buyer --> (Make Payment)
+    Buyer --> (Confirm Completion)
+    Buyer --> (Rate Service)
+    Buyer --> (Raise Dispute)
+
+    Seller --> (User Registration)
+    Seller --> (Phone Verification)
+    Seller --> (NIN Verification)
+    Seller --> (Create Service)
+    Seller --> (Share Vouch Links)
+    Seller --> (Update Availability)
+    Seller --> (Accept Job Offers)
+    Seller --> (Mark Job Complete)
+    Seller --> (Receive Payment)
+    Seller --> (Raise Dispute)
+
+    Admin --> (Resolve Disputes)
+    Admin --> (Monitor Platform)
+    Admin --> (Manage Users)
+
+    (Request Immediate Help) .> (Browse Services) : <<include>>
+    (Make Payment) .> (Request Immediate Help) : <<include>>
+    (Rate Service) .> (Confirm Completion) : <<include>>
+}
+@enduml

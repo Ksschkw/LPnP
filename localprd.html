@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocaLe - Complete Product Requirements Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B5FBF;
+            --primary-dark: #6A4C93;
+            --primary-darker: #4A306D;
+            --secondary: #000000;
+            --accent: #FF6B8B;
+            --light: #F8F7FF;
+            --dark: #2D2B32;
+            --gray: #6C757D;
+            --success: #00D4AA;
+            --warning: #FFB74D;
+            --danger: #FF6B6B;
+            --card-shadow: 0 20px 40px -10px rgba(139, 95, 191, 0.15), 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+            --section-spacing: 5rem;
+            
+            /* Light theme as default */
+            --bg-primary: #F8F7FF;
+            --bg-card: #FFFFFF;
+            --text-primary: #2D2B32;
+            --text-secondary: #6C757D;
+            --border: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0A0A0A;
+            --bg-card: #111111;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B3B3B3;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px var(--accent);
+        }
+
+        /* Header & Hero - IMPROVED DESIGN */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-darker) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(139, 95, 191, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 139, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(106, 76, 147, 0.2) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 6rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #FFFFFF 0%, var(--primary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .logo-subtitle {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero-tagline {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            line-height: 1.4;
+            opacity: 0.95;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-10px); }
+            60% { transform: translateX(-50%) translateY(-5px); }
+        }
+
+        header { text-align: center; padding: 8rem 2rem 6rem; border-bottom: 1px solid var(--border); position: relative; }
+        header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 5rem; letter-spacing: -1px; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header h2 { font-weight: 400; margin: 1rem 0 2rem; font-size: 1.6rem; color: var(--text-muted); }
+        header blockquote { font-size: 1.4rem; font-style: italic; opacity: 0.9; color: var(--accent); margin-top: 2rem; }
+
+
+        /* Section Styling */
+        .section {
+            margin-bottom: var(--section-spacing);
+            padding-top: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 3rem;
+            border: 1px solid var(--border);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 60px -10px rgba(139, 95, 191, 0.25), 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2rem;
+            color: white;
+            font-size: 1.8rem;
+            box-shadow: 0 10px 20px rgba(139, 95, 191, 0.3);
+        }
+
+        .card-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .card-content {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            border-left: 5px solid var(--primary);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 95, 191, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateX(8px);
+            border-left-color: var(--accent);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Trust Layers */
+        .trust-layers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin: 4rem 0;
+        }
+
+        .layer-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .layer-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        .layer-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 95, 191, 0.25);
+        }
+
+        .layer-icon {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .layer-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* User Journey */
+        .journey-container {
+            position: relative;
+            margin: 4rem 0;
+        }
+
+        .journey-path {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 4rem;
+        }
+
+        .journey-path::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .journey-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-card);
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 700;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s ease;
+        }
+
+        .journey-step:hover .step-circle {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Personas */
+        .personas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .persona-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .persona-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        .persona-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.2);
+        }
+
+        .persona-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            box-shadow: 0 15px 30px rgba(139, 95, 191, 0.3);
+        }
+
+        .persona-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .persona-role {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Technical Architecture */
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .tech-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s ease;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(139, 95, 191, 0.15);
+        }
+
+        .tech-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin: 3rem 0;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(139, 95, 191, 0.2);
+        }
+
+        .metric-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .metric-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .metric-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Flow Diagrams */
+        .flow-container {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            margin: 3rem 0;
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+        }
+
+        .flow-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 900px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 2rem;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin: 0 1.5rem;
+        }
+
+        .flow-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 2rem;
+            box-shadow: 0 15px 30px rgba(139, 95, 191, 0.3);
+        }
+
+        /* Lists */
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 2.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .feature-list li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 4rem 0;
+            background: var(--secondary);
+            color: white;
+            margin-top: var(--section-spacing);
+        }
+
+        .footer-tagline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        /* Print Styles */
+        @media print {
+            :root {
+                --bg-primary: #ffffff !important;
+                --bg-card: #ffffff !important;
+                --text-primary: #000000 !important;
+                --text-secondary: #444444 !important;
+                --border: #cccccc !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            
+            .card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+            }
+            
+            .section {
+                page-break-after: always;
+            }
+            
+            .theme-toggle {
+                display: none !important;
+            }
+            
+            .hero {
+                background: linear-gradient(135deg, #4A306D 0%, #000000 100%) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 4rem;
+            }
+            
+            .hero-tagline {
+                font-size: 1.6rem;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .feature-grid,
+            .trust-layers,
+            .personas-grid,
+            .architecture-grid,
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .journey-path {
+                flex-direction: column;
+            }
+            
+            .journey-path::before {
+                display: none;
+            }
+            
+            .journey-step {
+                margin-bottom: 3rem;
+            }
+            
+            .hero-stats {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section - IMPROVED DESIGN -->
+    <!-- <section class="hero">
+        <div class="hero-content">
+            <div class="logo">LocaLe</div>
+            <div class="logo-subtitle">Your Community is Your Credential</div>
+            <h1 class="hero-tagline">Africa's most trusted peer-to-peer marketplace where social validation replaces anonymous transactions</h1>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">$1.4T</div>
+                    <div class="stat-label">Nigerian Informal Economy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">< 2min</div>
+                    <div class="stat-label">Average Response Time</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">90%+</div>
+                    <div class="stat-label">Job Completion Rate</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down fa-2x" style="color: rgba(255,255,255,0.7);"></i>
+        </div>
+    </section> -->
+    <header>
+        <h1>LocaLe</h1>
+        <h2>Where your name carries weight again — because your reputation is your greatest currency.</h2>
+    </header>
+
+    <div class="container">
+        <!-- Vision & Problem -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Vision & Problem Statement</h2>
+                <p class="section-subtitle">Transforming Nigeria's $1.4 trillion informal service economy through trust and technology</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="card-title">The Vision</h3>
+                </div>
+                <div class="card-content">
+                    <p>Create Africa's most trusted peer-to-peer marketplace where social validation replaces anonymous transactions, enabling anyone to safely buy and sell services within their community.</p>
+                </div>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="feature-title">For Service Seekers</h4>
+                    <ul class="feature-list">
+                        <li>"How do I know this plumber is trustworthy?"</li>
+                        <li>"I need help right now, not in 3 days"</li>
+                        <li>"What if I pay and they don't show up?"</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 class="feature-title">For Service Providers</h4>
+                    <ul class="feature-list">
+                        <li>"How do I prove I'm reliable?"</li>
+                        <li>"Where can I find customers who trust me?"</li>
+                        <li>"How do I get paid securely?"</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution Overview -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Solution Overview</h2>
+                <p class="section-subtitle">Three layers of trust that transform how Nigerians connect and transact</p>
+            </div>
+
+            <div class="trust-layers">
+                <div class="layer-card">
+                    <div class="layer-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="layer-title">Social Vouching</h3>
+                    <p>Services need community endorsements before going live. Friends, past clients, colleagues vouch for your skills, building credibility before your first transaction.</p>
+                </div>
+                
+                <div class="layer-card">
+                    <div class="layer-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3 class="layer-title">Identity Verification</h3>
+                    <p>NIN verification via QoreID for all sellers. Real-time government database checks with auto-filled verified profile information.</p>
+                </div>
+                
+                <div class="layer-card">
+                    <div class="layer-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="layer-title">Secure Transactions</h3>
+                    <p>Payments held in escrow until work is completed. Both parties must confirm satisfaction before fund release, with dispute resolution for issues.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="card-title">Real-Time Matching Engine</h3>
+                </div>
+                <div class="card-content">
+                    <p>Finds nearest available providers in under 2 minutes using advanced geospatial algorithms that consider both proximity (70%) and trust scores (30%).</p>
+                    
+                    <div class="flow-container">
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="step-title">Request Help</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="step-title">Find Providers<br>(10km radius)</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-sort-amount-up"></i>
+                                </div>
+                                <div class="step-title">Rank by Proximity<br>& Trust</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="step-title">Send Offers<br>to Top 3</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="step-title">First to Accept<br>Wins</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Personas -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">User Personas</h2>
+                <p class="section-subtitle">Real people with real needs - all unified under one platform</p>
+            </div>
+
+            <div class="personas-grid">
+                <div class="persona-card">
+                    <div class="persona-avatar">A</div>
+                    <h3 class="persona-name">Amara</h3>
+                    <div class="persona-role">Marketing Manager, 28</div>
+                    <p><strong>Goals:</strong> Find reliable help quickly, avoid scams, safe transactions</p>
+                    <p><strong>Frustrations:</strong> Fake reviews, no-show providers, payment risks</p>
+                    <p><strong>Journey:</strong> Starts as buyer, becomes hybrid user offering design services</p>
+                </div>
+                
+                <div class="persona-card">
+                    <div class="persona-avatar">C</div>
+                    <h3 class="persona-name">Chinedu</h3>
+                    <div class="persona-role">Plumber, 35</div>
+                    <p><strong>Goals:</strong> Find more customers, get paid fairly, build reputation</p>
+                    <p><strong>Frustrations:</strong> Customers not paying, unreliable jobs, no verification</p>
+                    <p><strong>Journey:</strong> Service provider who also uses platform as buyer</p>
+                </div>
+                
+                <div class="persona-card">
+                    <div class="persona-avatar">T</div>
+                    <h3 class="persona-name">Tunde</h3>
+                    <div class="persona-role">Student, 22</div>
+                    <p><strong>Goals:</strong> Earn extra money, build skills portfolio, flexible work</p>
+                    <p><strong>Frustrations:</strong> No platform for small jobs, hard to prove reliability</p>
+                    <p><strong>Journey:</strong> True hybrid - buys and sells multiple services weekly</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Journey -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Unified User Journey</h2>
+                <p class="section-subtitle">One profile, multiple roles - seamless switching between finding help and offering help</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3 class="card-title">The Unified Experience</h3>
+                </div>
+                <div class="card-content">
+                    <p>Every user is just a "LocaLe User" who can seamlessly switch between finding help and offering help with one unified reputation that builds across all activities.</p>
+                    
+                    <div class="journey-container">
+                        <div class="journey-path">
+                            <div class="journey-step">
+                                <div class="step-circle">1</div>
+                                <div class="step-title">Instant Registration</div>
+                                <div class="step-description">Phone + Name + Password → Immediate access</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">2</div>
+                                <div class="step-title">Contextual Onboarding</div>
+                                <div class="step-description">Personalized guidance based on actions</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">3</div>
+                                <div class="step-title">Smart Permissions</div>
+                                <div class="step-description">Ask for info when it makes sense</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">4</div>
+                                <div class="step-title">Natural Discovery</div>
+                                <div class="step-description">Browse → "I could do that!" → Create service</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h4 class="feature-title">Progressive Registration</h4>
+                            <p>Start with just phone number and name. Add email, location, NIN verification only when needed for specific features.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <h4 class="feature-title">Seamless Role Switching</h4>
+                            <p>No separate "buyer" or "seller" modes. One dashboard shows both services you need and services you offer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real User Scenario -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-road"></i>
+                    </div>
+                    <h3 class="card-title">Real User Scenario: Amara's Hybrid Journey</h3>
+                </div>
+                <div class="card-content">
+                    <div class="journey-container">
+                        <div class="journey-path">
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-tint"></i>
+                                </div>
+                                <div class="step-title">Day 1: Urgent Need</div>
+                                <div class="step-description">Sink leaking → Finds Blessing → Great experience → 5★ review</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <div class="step-title">Day 7: Realization</div>
+                                <div class="step-description">Browsing → Sees design services → "I do this for my job!"</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="step-title">Day 14: Hybrid User</div>
+                                <div class="step-description">Morning: Books photographer | Afternoon: Gets hired for design</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Features -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Core Features & User Flows</h2>
+                <p class="section-subtitle">Comprehensive feature set designed for trust, speed, and security</p>
+            </div>
+
+            <!-- Service Creation & Vouching -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="card-title">Service Creation & Vouching System</h3>
+                </div>
+                <div class="card-content">
+                    <div class="flow-container">
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div class="step-title">Create Service</div>
+                                <div class="step-description">0 Trust Points</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-share-alt"></i>
+                                </div>
+                                <div class="step-title">Share Vouch Link</div>
+                                <div class="step-description">Friends & Network</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                </div>
+                                <div class="step-title">Collect Endorsements</div>
+                                <div class="step-description">Trusted: +50pts<br>Quick: +10pts</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="step-title">Service Active</div>
+                                <div class="step-description">100+ Points</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4 class="feature-title">Service States</h4>
+                            <ul class="feature-list">
+                                <li><strong>Draft:</strong> Created but inactive (0 trust points)</li>
+                                <li><strong>Vouching:</strong> Collecting endorsements</li>
+                                <li><strong>Active:</strong> Reached 100+ points, visible in marketplace</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4 class="feature-title">Vouch Types</h4>
+                            <ul class="feature-list">
+                                <li><strong>Trusted Vouch:</strong> +50 points from registered users</li>
+                                <li><strong>Quick Vouch:</strong> +10 points from non-users via OTP</li>
+                                <li><strong>Retraction Penalty:</strong> -75 points if withdrawn</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Escrow Payment System -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="card-title">Escrow Payment System</h3>
+                </div>
+                <div class="card-content">
+                    <div class="flow-container">
+                        <div class="flow-diagram">
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="step-title">Payment into Escrow</div>
+                                <div class="step-description">100% secured</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="step-title">Service Completion</div>
+                                <div class="step-description">Provider marks done</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <div class="step-title">Buyer Confirmation</div>
+                                <div class="step-description">24-hour window</div>
+                            </div>
+                            <div class="flow-arrow">→</div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div class="step-title">Fund Release</div>
+                                <div class="step-description">Automatic or dispute</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4 class="feature-title">Dispute Resolution</h4>
+                            <ul class="feature-list">
+                                <li><strong>24-hour automated mediation</strong> first attempt</li>
+                                <li><strong>Admin escalation</strong> for unresolved cases</li>
+                                <li><strong>Partial refunds</strong> based on work completion</li>
+                                <li><strong>Binding decisions</strong> by platform administrators</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4 class="feature-title">Bidirectional Review System</h4>
+                            <ul class="feature-list">
+                                <li><strong>24-hour blind period</strong> - reviews hidden</li>
+                                <li><strong>Prevents retaliatory ratings</strong></li>
+                                <li><strong>Mutual release</strong> after period ends</li>
+                                <li><strong>Universal trust score</strong> from all reviews</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Technical Architecture</h2>
+                <p class="section-subtitle">Robust, scalable infrastructure built for performance and security</p>
+            </div>
+
+            <div class="architecture-grid">
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fab fa-vuejs"></i>
+                    </div>
+                    <h4 class="tech-name">Frontend</h4>
+                    <p>Vue.js SPA with responsive design, real-time WebSocket connections</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h4 class="tech-name">Backend</h4>
+                    <p>FastAPI (Python) with async support, JWT authentication</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4 class="tech-name">Database</h4>
+                    <p>PostgreSQL</p>
+                </div>
+                
+                <div class="tech-card">
+                    <div class="tech-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4 class="tech-name">Cache</h4>
+                    <p>Redis for real-time provider locations and sessions</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-plug"></i>
+                    </div>
+                    <h3 class="card-title">External Integrations</h3>
+                </div>
+                <div class="card-content">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-id-card-alt"></i>
+                            </div>
+                            <h4 class="feature-title">QoreID</h4>
+                            <p>NIN verification against government database with auto-fill verified information and compliance with Nigerian regulations.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <h4 class="feature-title">Payment Gateways</h4>
+                            <p>Paystack/Flutterwave integration for secure payment processing, escrow fund management, and automated payouts.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-sms"></i>
+                            </div>
+                            <h4 class="feature-title">SMS Services</h4>
+                            <p>Termii/Twilio for OTP verification, real-time notifications, and status updates delivery.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Success Metrics -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Success Metrics</h2>
+                <p class="section-subtitle">Measurable targets for platform performance and user satisfaction</p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">< 2min</div>
+                    <div class="metric-title">Dispatch Response</div>
+                    <div class="metric-description">Average request to acceptance time</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">90%+</div>
+                    <div class="metric-title">Completion Rate</div>
+                    <div class="metric-description">Successful job completions</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">< 5%</div>
+                    <div class="metric-title">Dispute Rate</div>
+                    <div class="metric-description">Transactions requiring intervention</div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-value">70%</div>
+                    <div class="metric-title">Activation Rate</div>
+                    <div class="metric-description">Services reaching 100 trust points</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="card-title">Platform Health Metrics</h3>
+                </div>
+                <div class="card-content">
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h4 class="feature-title">User Engagement</h4>
+                            <ul class="feature-list">
+                                <li>Daily Active Users / Monthly Active Users ratio</li>
+                                <li>25% target for users who both buy AND sell</li>
+                                <li>Cross-category usage patterns</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h4 class="feature-title">Trust Ecosystem</h4>
+                            <ul class="feature-list">
+                                <li>Users with both buyer and seller reviews: 40% target</li>
+                                <li>Average trust score consistency across roles</li>
+                                <li>Vouch quality and meaningfulness metrics</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Implementation Phases -->
+        <section class="section">
+            <div class="section-header">
+                <h2 class="section-title">Implementation Phases</h2>
+                <p class="section-subtitle">Structured rollout ensuring quality and market fit at each stage</p>
+            </div>
+
+            <div class="card">
+                <div class="card-content">
+                    <div class="journey-container">
+                        <div class="journey-path">
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <div class="step-title">Phase 1: MVP</div>
+                                <div class="step-description">Months 1-3<br>Core features, Lagos launch</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="step-title">Phase 2: Trust</div>
+                                <div class="step-description">Months 4-6<br>Enhanced validation & reviews</div>
+                            </div>
+                            <div class="journey-step">
+                                <div class="step-circle">
+                                    <i class="fas fa-expand"></i>
+                                </div>
+                                <div class="step-title">Phase 3: Scale</div>
+                                <div class="step-description">Months 7-9<br>Optimization & preparation</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-tagline">LocaLe: Your Community is Your Credential</div>
+            <p>Building Africa's most trusted peer-to-peer marketplace, one vouch at a time</p>
+        </div>
+    </footer>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Scroll to content when clicking the scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            document.querySelector('.section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections
+        document.querySelectorAll('.card, .feature-card, .layer-card, .persona-card, .tech-card, .metric-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

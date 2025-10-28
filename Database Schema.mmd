@@ -1,0 +1,158 @@
+erDiagram
+    User {
+        uuid id PK
+        string name
+        string email
+        string phone
+        string password_hash
+        string nin_encrypted
+        boolean nin_verified
+        integer trust_score
+        integer verification_level
+        string avatar_url
+        datetime last_active
+        boolean is_online
+        datetime created_at
+        datetime updated_at
+    }
+
+    ServiceCategory {
+        uuid id PK
+        string name
+        string description
+        string icon_url
+        uuid parent_id FK
+        integer min_trust_points
+        boolean is_active
+        datetime created_at
+    }
+
+    Service {
+        uuid id PK
+        uuid seller_id FK
+        string title
+        text description
+        decimal base_price
+        decimal hourly_rate
+        integer service_radius_km
+        geography current_location
+        boolean is_available_now
+        string status
+        integer trust_points
+        integer completion_count
+        decimal total_earnings
+        datetime created_at
+        datetime updated_at
+    }
+
+    ServiceServiceCategory {
+        uuid id PK
+        uuid service_id FK
+        uuid category_id FK
+        datetime created_at
+    }
+
+    Job {
+        uuid id PK
+        uuid buyer_id FK
+        uuid service_id FK
+        string job_type
+        string status
+        decimal price_agreed
+        text buyer_requirements
+        text work_address
+        geography work_location
+        datetime scheduled_time
+        datetime started_at
+        datetime completed_at
+        integer estimated_duration_minutes
+        datetime created_at
+        datetime updated_at
+    }
+
+    Vouch {
+        uuid id PK
+        uuid service_id FK
+        uuid voucher_user_id FK
+        string voucher_phone
+        string vouch_type
+        integer points_given
+        text comment
+        boolean is_retracted
+        datetime created_at
+    }
+
+    Review {
+        uuid id PK
+        uuid job_id FK
+        uuid reviewer_id FK
+        uuid reviewee_id FK
+        string review_type
+        integer rating
+        text comment
+        boolean is_visible
+        datetime created_at
+        datetime released_at
+    }
+
+    Dispute {
+        uuid id PK
+        uuid job_id FK
+        uuid raised_by_id FK
+        string reason
+        string status
+        string resolution_stage
+        text initial_complaint
+        text respondent_response
+        text admin_notes
+        string final_decision
+        decimal refund_amount
+        datetime created_at
+        datetime escalated_at
+        datetime resolved_at
+        uuid resolved_by_id FK
+    }
+
+    Payment {
+        uuid id PK
+        uuid job_id FK
+        decimal amount
+        string status
+        string gateway_reference
+        datetime created_at
+        datetime updated_at
+    }
+
+    Message {
+        uuid id PK
+        uuid job_id FK
+        uuid sender_id FK
+        text content
+        string message_type
+        boolean is_read
+        datetime sent_at
+        datetime read_at
+    }
+
+    %% CLEAN RELATIONSHIPS - Grouped by entity
+    User ||--o{ Service : creates
+    User ||--o{ Job : "buys as buyer"
+    User ||--o{ Vouch : gives
+    User ||--o{ Review : writes
+    User ||--o{ Dispute : raises
+    User ||--o{ Message : sends
+
+    Service ||--o{ Job : "used for"
+    Service ||--o{ Vouch : receives
+    Service }o--o{ ServiceCategory : "belongs to categories via"
+
+    ServiceCategory }o--o{ Service : "contains services via"
+    ServiceCategory ||--o{ ServiceCategory : "has subcategories"
+
+    Job ||--|| Payment : has
+    Job ||--o{ Review : contains
+    Job ||--o{ Dispute : has
+    Job ||--o{ Message : contains
+
+    Review ||--|| User : "targets user"
+    Dispute ||--|| User : "resolved by admin"

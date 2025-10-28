@@ -1,0 +1,66 @@
+flowchart LR
+    %% Locale Use Case Diagram
+
+    %% Actors
+    Buyer(["🧍 Buyer"])
+    Seller(["🧍 Seller"])
+    Admin(["🧍 Admin"])
+
+    %% Buyer Use Cases
+    UR(("User Registration"))
+    PV(("Phone Verification"))
+    NIN(("NIN Verification"))
+    BS(("Browse Services"))
+    RH(("Request Immediate Help"))
+    SS(("Schedule Service"))
+    MP(("Make Payment"))
+    CC(("Confirm Completion"))
+    RS(("Rate Service"))
+    RD(("Raise Dispute"))
+
+    %% Seller Use Cases
+    CS(("Create Service"))
+    SV(("Share Vouch Links"))
+    UA(("Update Availability"))
+    AJ(("Accept Job Offers"))
+    MJ(("Mark Job Complete"))
+    RP(("Receive Payment"))
+
+    %% Admin Use Cases
+    RDSP(("Resolve Disputes"))
+    MPF(("Monitor Platform"))
+    MU(("Manage Users"))
+
+    %% Buyer Relationships
+    Buyer --> UR
+    Buyer --> PV
+    Buyer --> NIN
+    Buyer --> BS
+    Buyer --> RH
+    Buyer --> SS
+    Buyer --> MP
+    Buyer --> CC
+    Buyer --> RS
+    Buyer --> RD
+
+    %% Seller Relationships
+    Seller --> UR
+    Seller --> PV
+    Seller --> NIN
+    Seller --> CS
+    Seller --> SV
+    Seller --> UA
+    Seller --> AJ
+    Seller --> MJ
+    Seller --> RP
+    Seller --> RD
+
+    %% Admin Relationships
+    Admin --> RDSP
+    Admin --> MPF
+    Admin --> MU
+
+    %% Include Relationships (dashed arrows)
+    RH -.->|«include»| BS
+    MP -.->|«include»| RH
+    RS -.->|«include»| CC

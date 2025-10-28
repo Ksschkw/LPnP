@@ -1,0 +1,26 @@
+erDiagram
+    %% CORE ENTITIES
+    User ||--o{ Service : "can sell"
+    User ||--o{ Job : "can buy"
+    Service ||--o{ Job : "provides"
+
+    %% TRUST SYSTEM
+    Service ||--o{ Vouch : "gains trust from"
+    User ||--o{ Vouch : "gives trust via"
+
+    %% CATEGORIZATION
+    Service }o--o{ ServiceCategory : "organized into"
+    ServiceCategory ||--o{ ServiceCategory : "hierarchical"
+
+    %% TRANSACTION SYSTEM
+    Job ||--|| Payment : "secured by"
+    Job ||--o{ Review : "evaluated through"
+    Job ||--o{ Dispute : "conflicts handled by"
+
+    %% COMMUNICATION
+    Job ||--o{ Message : "communicated via"
+    User ||--o{ Message : "sends"
+
+    %% REVIEW SYSTEM
+    User ||--o{ Review : "receives"
+    User ||--o{ Review : "writes"

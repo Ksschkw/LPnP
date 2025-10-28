@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocaLe - Product Requirements Document (v3: The Complete Edition)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8B5FBF;
+      --accent: #FF6B8B;
+      --bg-dark: #0A0A0A;
+      --bg-card: #111111;
+      --text-light: #FFFFFF;
+      --text-muted: #B3B3B3;
+      --border: rgba(255,255,255,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-light); line-height: 1.7; transition: background 0.3s, color 0.3s; }
+
+    header { text-align: center; padding: 8rem 2rem 6rem; border-bottom: 1px solid var(--border); position: relative; }
+    header h1 { font-family: 'Space Grotesk', sans-serif; font-size: 5rem; letter-spacing: -1px; background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    header h2 { font-weight: 400; margin: 1rem 0 2rem; font-size: 1.6rem; color: var(--text-muted); }
+    header blockquote { font-size: 1.4rem; font-style: italic; opacity: 0.9; color: var(--accent); margin-top: 2rem; }
+
+    .theme-toggle {
+      position: fixed; bottom: 2rem; right: 2rem; background: var(--primary);
+      color: white; border: none; border-radius: 50%; width: 55px; height: 55px;
+      font-size: 1.4rem; cursor: pointer; box-shadow: 0 0 15px var(--accent);
+      transition: all 0.3s ease;
+    }
+    .theme-toggle:hover { transform: scale(1.1); box-shadow: 0 0 25px var(--accent); }
+
+    main { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; }
+    section { margin-bottom: 5rem; }
+    h2.section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.6rem; border-left: 6px solid var(--primary); padding-left: 1rem; margin-bottom: 1.5rem; }
+    p.subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; }
+
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 1.2rem; padding: 2.5rem; margin-bottom: 2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+    .card h3 { font-family: 'Space Grotesk'; font-size: 1.6rem; color: var(--primary); margin-bottom: 1rem; }
+    .card ul { list-style: none; margin-top: 1rem; }
+    .card ul li { padding: 0.5rem 0; position: relative; padding-left: 1.8rem; }
+    .card ul li::before { content: '✦'; position: absolute; left: 0; color: var(--accent); }
+
+    .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+
+    pre { background: rgba(255,255,255,0.05); border-radius: 10px; padding: 1.5rem; color: var(--text-muted); overflow-x: auto; font-size: 0.95rem; }
+
+    footer { text-align: center; padding: 4rem 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; }
+
+    @media print {
+      :root {
+        --bg-dark: #ffffff; --bg-card: #ffffff; --text-light: #111111; --text-muted: #444444; --border: #cccccc; --primary: #4a306d; --accent: #ff4081;
+      }
+      body { background: var(--bg-dark); color: var(--text-light); }
+      header, footer { border: none; color: var(--text-light); }
+      .card { border: 1px solid #ddd; box-shadow: none; page-break-inside: avoid; }
+      section { page-break-after: always; }
+      .theme-toggle { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LocaLe</h1>
+    <h2>Where your name carries weight again — because your reputation is your greatest currency.</h2>
+  </header>
+
+  <main>
+    <section>
+      <h2 class="section-title">Vision & Problem Statement</h2>
+      <p class="subtitle">Empowering trust, transparency, and local credibility in Africa’s digital economy.</p>
+      <div class="card">
+        <h3>The Vision</h3>
+        <p>LocaLe envisions a Nigeria (and Africa) where trust isn’t dependent on central institutions, but validated through community. The goal is to digitize and scale the same social trust networks that power the informal economy — turning “someone I know” into verified, scalable reputation data.</p>
+      </div>
+      <div class="card">
+        <h3>The Problem</h3>
+        <ul>
+          <li><strong>Trust gap:</strong> People don’t trust strangers online, yet informal services rely on trust.</li>
+          <li><strong>Identity fragmentation:</strong> Millions lack verifiable digital identity.</li>
+          <li><strong>Informal economy exclusion:</strong> Most trades and services happen outside digital visibility or protection.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Solution Overview</h2>
+      <p class="subtitle">LocaLe builds a “trust layer” for peer-to-peer transactions through three reinforcing pillars.</p>
+      <div class="two-col">
+        <div class="card">
+          <h3>1. Verified Identity</h3>
+          <p>Every verified user links to a unique national ID (NIN) via QoreID. Real humans, real accountability. Verified users gain higher visibility and trust multiplier effects.</p>
+        </div>
+        <div class="card">
+          <h3>2. Social Vouching</h3>
+          <p>Trust doesn’t start from zero. Friends, past clients, and community members can vouch for your credibility, creating an initial “trust graph.” The more diverse and credible the vouches, the faster you grow.</p>
+        </div>
+        <div class="card">
+          <h3>3. Escrow Protection</h3>
+          <p>Secure payment system holds funds until both parties confirm satisfaction. Automated dispute handling ensures fairness without heavy bureaucracy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Unified User Journey</h2>
+      <div class="card">
+        <h3>1. Unified User Philosophy</h3>
+        <p><strong>Core Concept:</strong> Every user is simply a <strong>LocaLe User</strong> — someone who can buy, sell, or both. No rigid roles, just one profile, one reputation, and full freedom to operate naturally.</p>
+        <pre><code>USER PROFILE (You)
+├── Services I Need (Buying)
+├── Services I Offer (Selling)
+└── My Trust & Reputation (Universal)</code></pre>
+      </div>
+      <div class="card">
+        <h3>2. Smart Registration Journey</h3>
+        <p>Registration is progressive and contextual — we only ask for what matters when it matters.</p>
+        <pre><code>STEP 1: Instant Access (30s)
+WHAT WE ASK: Phone, Name, Password
+WHAT WE DON'T ASK: Email, Location, NIN
+IMMEDIATE VALUE: See nearby services instantly</code></pre>
+        <pre><code>STEP 2: Contextual Onboarding
+IF YOU SEARCH SERVICES → 'Find help fast'
+IF YOU OFFER SERVICES → 'Turn your skills into income'</code></pre>
+        <pre><code>STEP 3: Smart Permission Requests
+LOCATION → when searching
+NIN → when selling
+EMAIL → for receipts
+PHOTO → to build trust</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>3. Unified Discovery & Creation</h3>
+        <pre><code>DASHBOARD: Your LocaLe
+[Get Help Now] [Offer Service] [Browse]
+Recent Activity | Wallet | Trust Score</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>4. Real User Scenarios</h3>
+        <p>Three archetypes showcase the “hybrid” model:</p>
+        <ul>
+          <li><strong>Amara:</strong> Starts as a buyer, evolves into a trusted hybrid user.</li>
+          <li><strong>Chinedu:</strong> Trades services and uses LocaLe to hire talent too.</li>
+          <li><strong>Tunde:</strong> Lives the full circle — one wallet, one reputation, many roles.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>5. Smart Feature Unlocking</h3>
+        <pre><code>Basic Access: Browse | Book | Pay | Review
+NIN Verified → Offer services, vouch credibility
+Bank Verified → Faster payouts, higher limits
+Address Verified → Geo-priority, trust boost</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>6. Unified Trust System</h3>
+        <pre><code>⭐ Overall Trust: 4.8
+├── Buyer: 4.9
+└── Seller: 4.7
+
+Levels:
+1️⃣ New User → Verified
+2️⃣ Active User → Reliable Member
+3️⃣ Trusted Member → Priority Visibility</code></pre>
+      </div>
+
+      <div class="card">
+        <h3>7. Edge Cases</h3>
+        <ul>
+          <li><strong>Just Looking:</strong> No pressure notifications.</li>
+          <li><strong>Seasonal Users:</strong> Smart activity tracking.</li>
+          <li><strong>Explorers:</strong> Encouraged to diversify skills.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Core Features & Architecture</h2>
+      <div class="card"><h3>Frontend</h3><p>Vue.js SPA with offline-first support, service worker caching, and responsive components optimized for low-end devices.</p></div>
+      <div class="card"><h3>Backend</h3><p>FastAPI microservices with JWT auth, async database operations, and modular architecture supporting future scaling to microservices.</p></div>
+      <div class="card"><h3>Database</h3><p>PostgreSQL (core) + PostGIS for geospatial data, Redis for caching live sessions, and Celery for background task processing.</p></div>
+      <div class="card"><h3>Integrations</h3><ul><li>QoreID — Identity Verification</li><li>Paystack/Flutterwave — Escrow & Payments</li><li>Termii/Twilio — Messaging</li></ul></div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Business Model</h2>
+      <div class="two-col">
+        <div class="card"><h3>Revenue Streams</h3><ul><li>5% transaction commission</li><li>Premium badges</li><li>Business subscriptions</li><li>API access for 3rd party apps</li></ul></div>
+        <div class="card"><h3>Metrics</h3><ul><li>Activation rate: 70%</li><li>Completion: 90%</li><li>Disputes <5%</li><li>DAU hybrid ratio: 30%</li></ul></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Risks & Mitigations</h2>
+      <div class="two-col">
+        <div class="card"><h3>Fraud Prevention</h3><ul><li>Device fingerprinting</li><li>Weighted vouches</li><li>AI duplicate detection</li></ul></div>
+        <div class="card"><h3>User Adoption</h3><ul><li>Localized onboarding (Pidgin, Hausa, Yoruba)</li><li>Gamified onboarding flow</li><li>Low data mode</li></ul></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Implementation Phases</h2>
+      <div class="card"><pre><code>PHASE 1 — MVP (3 months)
+→ Core features, escrow, vouching
+→ Lagos-only launch
+
+PHASE 2 — Trust Layer (4–6 months)
+→ Full verification, reviews, gamification
+
+PHASE 3 — Scale (7–12 months)
+→ Regional rollout, B2B APIs, analytics suite</code></pre></div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Design Language & UX Principles</h2>
+      <div class="card"><h3>Visual Identity</h3><ul><li>Dark elegance + subtle gradients</li><li>Minimal noise, maximal clarity</li><li>Icons serve meaning, not decoration</li></ul></div>
+      <div class="card"><h3>UX Philosophy</h3><ul><li>Progressive disclosure — guide, don’t overload</li><li>One identity — unified experience across all actions</li><li>Symmetrical trust — your reputation benefits you everywhere</li></ul></div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Investor Readiness Snapshot</h2>
+      <div class="card"><ul><li>Problem Clarity: 9/10</li><li>Market Size: 9/10</li><li>Solution Differentiation: 9/10</li><li>Execution Realism: 8.5/10</li><li>Monetization: 8.5/10</li><li><strong>Overall Readiness: 9/10</strong></li></ul></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>LocaLe — Where your name carries weight again.</p>
+    <p>© 2025 LocaLe. All rights reserved.</p>
+  </footer>
+
+  <button class="theme-toggle" id="toggleBtn">☀️</button>
+  <script>
+    const toggle = document.getElementById('toggleBtn');
+    let dark = true;
+    toggle.addEventListener('click', () => {
+      document.documentElement.style.setProperty('--bg-dark', dark ? '#ffffff' : '#0A0A0A');
+      document.documentElement.style.setProperty('--bg-card', dark ? '#f5f5f5' : '#111111');
+      document.documentElement.style.setProperty('--text-light', dark ? '#111111' : '#ffffff');
+      document.documentElement.style.setProperty('--text-muted', dark ? '#444444' : '#b3b3b3');
+      document.documentElement.style.setProperty('--border', dark ? '#cccccc' : 'rgba(255,255,255,0.1)');
+      toggle.textContent = dark ? '🌙' : '☀️';
+      dark = !dark;
+    });
+  </script>
+</body>
+</html>

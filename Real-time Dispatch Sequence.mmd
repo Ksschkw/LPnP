@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant B as Buyer
+    participant API as FastAPI Backend
+    participant Redis as Redis Cache
+    participant DB as PostgreSQL
+    participant S as Seller
+
+    title Real-time Dispatch Sequence Diagram
+
+    B->>API: POST /jobs/dispatch {category, location}
+    API->>Redis: GEORADIUS available_providers
+    Redis-->>API: Nearby provider IDs
+    API->>DB: SELECT services WHERE id IN (...)
+    DB-->>API: Service details with trust scores
+    API->>API: Filter & rank by proximity/trust
+    API->>S: WebSocket: Job Offer (60s expiry)
+    S->>API: POST /accept_offer (first to respond)
+    API->>DB: INSERT Job (pending_payment)
+    API->>B: WebSocket: Provider Accepted
+    API->>S: WebSocket: Awaiting Payment
+    B->>API: Initiate Payment
+    API->>API: Process Escrow Hold
+    API->>S: WebSocket: Payment Confirmed

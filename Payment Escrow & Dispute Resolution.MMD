@@ -1,0 +1,13 @@
+flowchart TD
+    A[Escrow Payment Flow] --> B[Job Created]
+    B --> C[Buyer Makes Payment]
+    C --> D[Funds Held in Escrow]
+    D --> E[Seller Performs Service]
+    E --> F[Seller Marks Complete]
+    F --> G[Buyer Confirms Satisfaction]
+    G --> H[Funds Released to Seller]
+    
+    F --> I[Buyer Raises Dispute?]
+    I -->|Yes| J[Escrow Frozen]
+    J --> K[Admin Manual Resolution]
+    K --> L[Partial/Full Release Decision]

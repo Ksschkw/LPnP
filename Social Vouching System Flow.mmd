@@ -1,0 +1,18 @@
+flowchart TD
+    A[Vouching System Flow] --> B[Service Created<br>0 Trust Points]
+    B --> C[Seller Shares Vouch Link]
+    C --> D{Recipient Type?}
+    D -->|Registered User| E[Trusted Vouch<br>+50 Trust Points]
+    D -->|Non-User| F[Quick Vouch Flow]
+    
+    F --> G[Enter Phone & Comment]
+    G --> H[System Sends OTP]
+    H --> I{OTP Verified?}
+    I -->|Yes| J[Quick Vouch<br>+10 Trust Points]
+    I -->|No| G
+    
+    E --> K[Update Service Trust Points]
+    J --> K
+    K --> L{Trust Points ≥ 100?}
+    L -->|Yes| M[Service Auto-Activated]
+    L -->|No| C
