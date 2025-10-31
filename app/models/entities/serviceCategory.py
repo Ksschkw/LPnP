@@ -8,7 +8,7 @@ class ServiceCategory(Base):
     __tablename__ = "service_categories"
     
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(100), nullable=False)
+    name = Column(String(100), unique=True, nullable=False)  # ← ONLY ONE name FIELD
     description = Column(Text, nullable=True)
     icon_url = Column(String(500), nullable=True)
     

@@ -3,6 +3,9 @@ from app.models.entities.user import User
 from app.models.Requests.user_requests import UserCreateRequest
 import bcrypt
 import uuid
+import logging
+logger = logging.getLogger(__name__)
+
 
 class UserRepository:
     """Handles all database operations for users"""
@@ -13,6 +16,15 @@ class UserRepository:
     def get_by_id(self, user_id: str) -> User:
         """Find user by their unique ID"""
         return self.db.query(User).filter(User.id == user_id).first()
+    
+    def get_by_id(self, user_id: str) -> User:
+        """Find user by their unique ID"""
+        user = self.db.query(User).filter(User.id == user_id).first()
+        if not user:
+            logger.warning(f"User not found in database: {user_id}")
+        else:
+            logger.info(f"User found in database: {user.id} - {user.name}")
+        return user
     
     def get_by_phone(self, phone: str) -> User:
         """Find user by phone number (each phone can only have one account)"""

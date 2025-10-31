@@ -11,7 +11,8 @@ class ServiceCreateRequest(BaseModel):
     hourly_rate: Optional[Decimal] = None  # Optional hourly rate
     service_radius_km: int = 10  # How far the service provider will travel
     current_location: Optional[str] = None  # Current location of service provider
-    category_ids: List[str]  # List of category IDs this service belongs to
+    # category_ids: List[str]  # List of category IDs this service belongs to
+    category_name: str  # ← BY NAME, NOT ID
     
     @field_validator('base_price')
     @classmethod

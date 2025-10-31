@@ -27,6 +27,8 @@ class User(Base):
     # Status
     last_active = Column(DateTime, server_default=func.now())    # Auto-set to now
     is_online = Column(Boolean, default=False)                   # True if user is online
+    completion_count = Column(Integer, default=0)  # Number of completed jobs
+
     
     # Timestamps (Auto-managed)
     created_at = Column(DateTime, server_default=func.now())     # Auto-set on creation

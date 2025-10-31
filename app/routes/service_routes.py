@@ -2,13 +2,21 @@ from fastapi import APIRouter, Depends, HTTPException, status
 # from sqlalchemy.orm import Session
 from typing import List
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.BASIC_FORMATTER = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+logger = logging.getLogger(__name__)
+
+
 # from app.database import get_db
 # from app.dependencies import get_user_service
 from app.dependencies import get_service_service
+from app.models.entities.user import User
 from app.service.service_service import ServiceService
 from app.models.Requests.service_requests import ServiceCreateRequest, ServiceUpdateRequest
 from app.models.Responses.service_responses import ServiceBaseResponse, ServiceDetailResponse #, ServiceResponse
 
+from app.auth import get_current_user
 # Create router for all service-related endpoints
 router = APIRouter(prefix="/services", tags=["services"])
 
@@ -18,6 +26,24 @@ def get_active_services(skip: int = 0, limit: int = 100, service_service: Servic
     # service_service = ServiceService(db)
     return service_service.get_active_services(skip, limit)
 
+@router.get("/my", response_model=List[ServiceBaseResponse])
+async def get_my_services(
+    current_user: User = Depends(get_current_user),
+    service_service: ServiceService = Depends(get_service_service)
+):
+    logger.info(f"User {current_user.id} fetching their services")
+    
+    # Debug: Check if user exists and has the right ID
+    logger.info(f"Current user ID: {current_user.id}")
+    
+    services = service_service.get_services_by_seller(current_user.id)
+    logger.info(f"Found {len(services)} services for user {current_user.id}")
+    
+    if not services:
+        logger.info(f"No services found for user {current_user.id} - returning empty list")
+        return []
+    
+    return services
 
 @router.get("/{service_id}", response_model=ServiceDetailResponse)
 def get_service(service_id: str, service_service: ServiceService = Depends(get_service_service)):
@@ -39,15 +65,18 @@ def get_services_by_seller(seller_id: str, skip: int = 0, limit: int = 100, serv
     return service_service.get_services_by_seller(seller_id, skip, limit)
 
 @router.post("/", response_model=ServiceDetailResponse, status_code=status.HTTP_201_CREATED)
-def create_service(
+async def create_service(
     service_data: ServiceCreateRequest, 
-    seller_id: str,  # For now, we pass seller_id as query parameter
+    # seller_id: str,  # For now, we pass seller_id as query parameter
+    current_user: User = Depends(get_current_user),
     service_service: ServiceService = Depends(get_service_service)
 ):
     """Create a new service offering"""
     # service_service = ServiceService(db)
     try:
-        return service_service.create_service(service_data, seller_id)
+        logger.info(f"User {current_user.id} creating service: {service_data.title} by {current_user.id}")
+        return service_service.create_service(service_data, seller_id=current_user.id)
+        # return service_service.create_service(service_data, seller_id)
     except ValueError as e:
         # Handle validation errors (invalid categories, pricing, etc.)
         raise HTTPException(

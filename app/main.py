@@ -4,21 +4,26 @@ from app.database import engine, Base
 from app.models.entities import user, service, serviceCategory, job, vouch, review, dispute, payment, message, serviceServiceCategory
 
 # Import route files
-from app.routes import user_routes, service_routes
+from app.routes import user_routes, service_routes, admin_routes
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.BASIC_FORMATTER = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+# Base.metadata.drop_all(bind=engine)  
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="LocaLe API",
-    description="Your Community is Your Credential - Africa's trusted peer-to-peer marketplace",
+    description="Your Community is Your Credential - peer-to-peer marketplace",
     version="1.0.0"
 )
 
 # Allow frontend to connect to API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to your frontend URL in production
+    allow_origins=["*"],  # frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,6 +32,7 @@ app.add_middleware(
 # Connect all route files
 app.include_router(user_routes.router)
 app.include_router(service_routes.router)
+app.include_router(admin_routes.router)
 
 @app.get("/")
 def root():

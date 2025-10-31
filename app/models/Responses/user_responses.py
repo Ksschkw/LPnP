@@ -28,6 +28,8 @@ class UserDetailResponse(UserBaseResponse):
     total_earnings: Optional[float] = None  # Total earnings (for service providers)
     created_at: datetime  # When user account was created (UTC)
     updated_at: datetime  # When user profile was last updated (UTC)
+    password_hash: Optional[str] = None
+    nin_encrypted: Optional[str] = None
 
 class UserWithTokenResponse(UserBaseResponse):
     """User response that includes authentication token"""

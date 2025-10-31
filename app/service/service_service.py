@@ -20,10 +20,38 @@ class ServiceService:
             return None
         return ServiceDetailResponse.model_validate(service)
     
+    # def get_services_by_seller(self, seller_id: str, skip: int = 0, limit: int = 100) -> list[ServiceBaseResponse]:
+    #     """Get all services offered by a specific user"""
+    #     services = self.service_repo.get_by_seller(seller_id, skip, limit)
+    #     return [ServiceBaseResponse.model_validate(service) for service in services]
+
     def get_services_by_seller(self, seller_id: str, skip: int = 0, limit: int = 100) -> list[ServiceBaseResponse]:
         """Get all services offered by a specific user"""
-        services = self.service_repo.get_by_seller(seller_id, skip, limit)
-        return [ServiceBaseResponse.model_validate(service) for service in services]
+        logger.info(f"Looking for services by seller: {seller_id}")
+        
+        try:
+            services = self.service_repo.get_by_seller(seller_id, skip, limit)
+            logger.info(f"Repository returned: {len(services) if services else 0} services")
+            
+            # Return empty list if no services found (this is normal)
+            if not services:
+                logger.info(f"No services found for seller {seller_id} - returning empty list")
+                return []
+            
+            validated_services = []
+            for service in services:
+                try:
+                    validated = ServiceBaseResponse.model_validate(service)
+                    validated_services.append(validated)
+                except Exception as e:
+                    logger.error(f"Error validating service {service.id}: {e}")
+            
+            logger.info(f"Returning {len(validated_services)} validated services")
+            return validated_services
+            
+        except Exception as e:
+            logger.error(f"Error in get_services_by_seller: {e}")
+            return []
     
     def get_active_services(self, skip: int = 0, limit: int = 100) -> list[ServiceBaseResponse]:
         """Get all services that are currently active and available"""
@@ -31,13 +59,16 @@ class ServiceService:
         return [ServiceBaseResponse.model_validate(service) for service in services]
     
     def create_service(self, service_data: ServiceCreateRequest, seller_id: str) -> ServiceDetailResponse:
-        """Create a new service offering with validation"""
-        # Verify all category IDs exist
-        for category_id in service_data.category_ids:
-            category = self.category_repo.get_by_id(category_id)
-            if not category:
-                raise ValueError(f"Category '{category_id}' does not exist")
+        """Create a new service with category by name"""
         
+        logger.info(f"Creating service: {service_data.title} for seller {seller_id} in category '{service_data.category_name}'")
+        
+        # Validate category exists
+        category = self.category_repo.get_by_name(service_data.category_name)
+        if not category:
+            logger.warning(f"Category not found: {service_data.category_name}")
+            raise ValueError(f"Category '{service_data.category_name}' does not exist")
+            
         # Validate pricing
         if service_data.base_price <= 0:
             raise ValueError("Service price must be greater than 0")
@@ -50,8 +81,9 @@ class ServiceService:
             raise ValueError("Service radius must be between 1 and 100 km")
         
         # Create the service
-        service = self.service_repo.create(service_data, seller_id)
-        logger.info(f"New service created: {service.title} by seller {seller_id}")
+        service = self.service_repo.create(service_data, seller_id, service_data.category_name)
+        # logger.info(f"New service created: {service.title} by seller {seller_id}")
+        logger.info(f"Service created: {service.id} - {service.title} by seller {seller_id}")
         return ServiceDetailResponse.model_validate(service)
     
     def update_service(self, service_id: str, update_data: dict) -> ServiceDetailResponse:

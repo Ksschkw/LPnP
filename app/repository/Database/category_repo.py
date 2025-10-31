@@ -37,3 +37,8 @@ class CategoryRepository:
         self.db.commit()
         self.db.refresh(category)
         return category
+    
+    # All lookups by name
+    def get_by_name(self, name: str) -> ServiceCategory:
+        """Find category by name (case-sensitive)"""
+        return self.db.query(ServiceCategory).filter(ServiceCategory.name == name).first()
