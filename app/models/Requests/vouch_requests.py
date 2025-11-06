@@ -1,19 +1,29 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 from typing import Optional
 
 class VouchCreateRequest(BaseModel):
     """Request model for creating a vouch/endorsement for a service"""
     
-    service_id: str  # ID of the service being vouched for
-    voucher_phone: str  # Phone number of person giving the vouch
-    vouch_type: str  # Type of vouch: "trusted" (50 points) or "quick" (10 points)
     comment: Optional[str] = None  # Optional comment about why they're vouching
     
-    @field_validator('vouch_type')
+    # Only required for non-logged-in users
+    voucher_phone: Optional[str] = None  # Phone number of person giving the vouch (only for quick vouches)
+    
+    @model_validator(mode='after')
+    def validate_phone_for_quick_vouch(self) -> 'VouchCreateRequest':
+        """Validate that phone is provided for non-logged-in users"""
+        # This validation will be handled in the service layer based on auth status
+        return self
+    
+    @field_validator('voucher_phone')
     @classmethod
-    def validate_vouch_type(cls, v: str) -> str:
-        """Ensure vouch type is valid"""
-        valid_types = ['trusted', 'quick']
-        if v not in valid_types:
-            raise ValueError(f'Vouch type must be one of: {", ".join(valid_types)}')
-        return v
+    def validate_phone_format(cls, v: Optional[str]) -> Optional[str]:
+        """Validate phone format if provided"""
+        if v is None:
+            return v
+        
+        # Basic phone validation - adjust based on your requirements
+        if len(v.strip()) < 5:
+            raise ValueError('Phone number must be at least 5 characters')
+        
+        return v.strip()

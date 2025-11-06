@@ -32,6 +32,12 @@ app.add_middleware(
 # Connect all route files
 app.include_router(user_routes.router)
 app.include_router(service_routes.router)
+from app.routes import job_routes, vouch_routes
+
+app.include_router(job_routes.router)
+app.include_router(vouch_routes.router)
+#
+#ADDMMIINN
 app.include_router(admin_routes.router)
 
 @app.get("/")

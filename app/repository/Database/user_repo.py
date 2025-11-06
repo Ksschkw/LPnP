@@ -68,12 +68,28 @@ class UserRepository:
         return user
     
     def delete(self, user_id: str) -> bool:
-        """Permanently delete a user account"""
+        """Permanently delete a user account and handle related records"""
         user = self.get_by_id(user_id)
         if user:
-            self.db.delete(user)
-            self.db.commit()
-            return True
+            try:
+                # First delete or handle related services
+                from app.models.entities.service import Service
+                user_services = self.db.query(Service).filter(Service.seller_id == user_id).all()
+                
+                for service in user_services:
+                    # Option 1: Delete the services (recommended for MVP)
+                    self.db.delete(service)
+                    # Option 2: Orphan the services (if you want to keep them)
+                    # service.seller_id = None  # But this violates NOT NULL constraint
+                
+                # Then delete the user
+                self.db.delete(user)
+                self.db.commit()
+                return True
+            except Exception as e:
+                self.db.rollback()
+                logger.error(f"Error deleting user {user_id}: {e}")
+                return False
         return False
     
     #Out - utility

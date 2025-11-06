@@ -1,0 +1,67 @@
+from app.repository.Database.job_repo import JobRepository
+from app.repository.Database.service_repo import ServiceRepository
+from app.models.Requests.job_requests import JobCreateRequest
+from app.models.Responses.job_responses import JobBaseResponse, JobDetailResponse
+import logging
+
+logger = logging.getLogger(__name__)
+
+class JobService:
+    def __init__(self, db):
+        self.job_repo = JobRepository(db)
+        self.service_repo = ServiceRepository(db)
+    
+    def create_job_request(self, service_id: str, job_data: JobCreateRequest, buyer_id: str) -> JobDetailResponse:
+        """Create a new job request for a service"""
+        # Verify service exists and is active
+        service = self.service_repo.get_by_id(service_id)
+        if not service:
+            raise ValueError("Service not found")
+        
+        if service.status != "active":
+            raise ValueError("This service is not currently available")
+        
+        # User can't request their own service
+        if service.seller_id == buyer_id:
+            raise ValueError("You cannot request your own service")
+        
+        # Create the job
+        job = self.job_repo.create(job_data, buyer_id, service_id)
+        logger.info(f"Job request created: {job.id} for service {service_id} by user {buyer_id}")
+        
+        return JobDetailResponse.model_validate(job)
+    
+    def get_my_job_requests(self, user_id: str) -> list[JobBaseResponse]:
+        """Get job requests for current user (as buyer)"""
+        jobs = self.job_repo.get_jobs_for_buyer(user_id)
+        return [JobBaseResponse.model_validate(job) for job in jobs]
+    
+    def get_my_job_offers(self, seller_id: str) -> list[JobDetailResponse]:
+        """Get job requests for current user's services (as seller)"""
+        jobs = self.job_repo.get_jobs_for_seller(seller_id)
+        return [JobDetailResponse.model_validate(job) for job in jobs]
+    
+    def update_job_status(self, job_id: str, status: str, user_id: str) -> JobDetailResponse:
+        """Update job status with permission check"""
+        job = self.job_repo.get_by_id(job_id)
+        if not job:
+            raise ValueError("Job not found")
+        
+        # Check permissions - only seller can accept/update their jobs
+        if user_id != job.service.seller_id:
+            raise ValueError("You can only update jobs for your own services")
+        
+        job = self.job_repo.update_status(job_id, status)
+        return JobDetailResponse.model_validate(job)
+    
+    def get_job_details(self, job_id: str, user_id: str) -> JobDetailResponse:
+        """Get job details - only participants can view"""
+        job = self.job_repo.get_by_id(job_id)
+        if not job:
+            raise ValueError("Job not found")
+        
+        # Only buyer or seller can view job details
+        if user_id not in [job.buyer_id, job.service.seller_id]:
+            raise ValueError("You don't have permission to view this job")
+        
+        return JobDetailResponse.model_validate(job)

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocaLe - Your Community is Your Credential</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Loading LocaLe...</p>
+    </div>
+
+    <!-- Landing Page (for unauthenticated users) -->
+    <div id="landingPage" class="page">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <i class="fas fa-handshake"></i>
+                    <span>LocaLe</span>
+                </div>
+                <div class="nav-actions">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="registerBtn" class="btn btn-primary">Register</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="landing-main">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">Your Community is Your Credential</h1>
+                    <p class="hero-subtitle">Peer-to-peer marketplace built on trust and local connections</p>
+                    <div class="hero-actions">
+                        <button id="heroLoginBtn" class="btn btn-primary btn-large">Get Started</button>
+                        <button id="heroLearnMore" class="btn btn-outline btn-large">Learn More</button>
+                    </div>
+                </div>
+                <div class="hero-graphic">
+                    <div class="floating-card card-1">
+                        <i class="fas fa-tools"></i>
+                        <span>Local Services</span>
+                    </div>
+                    <div class="floating-card card-2">
+                        <i class="fas fa-star"></i>
+                        <span>Trust System</span>
+                    </div>
+                    <div class="floating-card card-3">
+                        <i class="fas fa-users"></i>
+                        <span>Community</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Authentication Modals -->
+    <div id="authModals">
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Welcome Back</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginPhone">Phone Number</label>
+                        <input type="tel" id="loginPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="#" id="showRegister">Sign up</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Join LocaLe</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email (Optional)</label>
+                        <input type="email" id="registerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPhone">Phone Number</label>
+                        <input type="tel" id="registerPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="#" id="showLogin">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (for authenticated users) -->
+    <div id="app" class="page hidden">
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="header-container">
+                <div class="header-brand">
+                    <i class="fas fa-handshake"></i>
+                    <span>LocaLe</span>
+                </div>
+                
+                <nav class="header-nav">
+                    <a href="#dashboard" class="nav-link active" data-view="dashboard">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#services" class="nav-link" data-view="services">
+                        <i class="fas fa-concierge-bell"></i>
+                        <span>Services</span>
+                    </a>
+                    <a href="#jobs" class="nav-link" data-view="jobs">
+                        <i class="fas fa-briefcase"></i>
+                        <span>Jobs</span>
+                    </a>
+                    <a href="#vouches" class="nav-link" data-view="vouches">
+                        <i class="fas fa-star"></i>
+                        <span>Vouches</span>
+                    </a>
+                    <a href="#admin" class="nav-link" data-view="admin">
+                        <i class="fas fa-cog"></i>
+                        <span>Admin</span>
+                    </a>
+                </nav>
+
+                <div class="header-user">
+                    <div class="user-dropdown">
+                        <img id="userAvatar" src="" alt="Avatar" class="user-avatar">
+                        <span id="userName" class="user-name"></span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-menu">
+                        <a href="#profile" class="dropdown-item" data-view="profile">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="#settings" class="dropdown-item" data-view="settings">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <button id="logoutBtn" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view active">
+                <div class="view-header">
+                    <h1>Dashboard</h1>
+                    <p>Welcome back to your community marketplace</p>
+                </div>
+                <!-- Dashboard content will be loaded here -->
+            </div>
+
+            <!-- Services View -->
+            <div id="servicesView" class="view">
+                <div class="view-header">
+                    <h1>Services</h1>
+                    <p>Find and offer local services</p>
+                </div>
+                <!-- Services content will be loaded here -->
+            </div>
+
+            <!-- Jobs View -->
+            <div id="jobsView" class="view">
+                <div class="view-header">
+                    <h1>Jobs</h1>
+                    <p>Manage your service requests and offers</p>
+                </div>
+                <!-- Jobs content will be loaded here -->
+            </div>
+
+            <!-- Vouches View -->
+            <div id="vouchesView" class="view">
+                <div class="view-header">
+                    <h1>Vouches</h1>
+                    <p>Build trust in your community</p>
+                </div>
+                <!-- Vouches content will be loaded here -->
+            </div>
+
+            <!-- Admin View -->
+            <div id="adminView" class="view">
+                <div class="view-header">
+                    <h1>Admin Panel</h1>
+                    <p>Manage platform settings</p>
+                </div>
+                <!-- Admin content will be loaded here -->
+            </div>
+
+            <!-- Profile View -->
+            <div id="profileView" class="view">
+                <div class="view-header">
+                    <h1>My Profile</h1>
+                    <p>Manage your account information</p>
+                </div>
+                <!-- Profile content will be loaded here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/places.js@1.19.0"></script>
+    <script src="uti
+    ls.js"></script>
+    <script src="auth.js"></script>
+    <script src="services.js"></script>
+    <script src="jobs.js"></script>
+    <script src="vouches.js"></script>
+    <script src="admin.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

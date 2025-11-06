@@ -1,18 +1,18 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 from typing import Optional, List
 from decimal import Decimal
 
 class ServiceCreateRequest(BaseModel):
     """Request model for creating a new service offering"""
     
-    title: str  # Service title like "Professional Plumbing Services"
-    description: Optional[str] = None  # Detailed service description
-    base_price: Decimal  # Base price for the service
-    hourly_rate: Optional[Decimal] = None  # Optional hourly rate
-    service_radius_km: int = 10  # How far the service provider will travel
-    current_location: Optional[str] = None  # Current location of service provider
+    title: str
+    description: Optional[str] = None
+    base_price: Decimal
+    hourly_rate: Optional[Decimal] = None
+    service_radius_km: int = 10
+    current_location: Optional[str] = None
     # category_ids: List[str]  # List of category IDs this service belongs to
-    category_name: str  # ← BY NAME, NOT ID
+    category_name: str
     
     @field_validator('base_price')
     @classmethod
@@ -42,10 +42,36 @@ class ServiceUpdateRequest(BaseModel):
     is_available_now: Optional[bool] = None
 
 class ServiceSearchRequest(BaseModel):
-    """Request model for searching services"""
+    """Smart search request with user-friendly parameters"""
     
-    category_id: Optional[str] = None  # Filter by specific category
-    location: str  # User's current location for proximity search
-    max_distance_km: int = 10  # Maximum distance from location
-    min_trust_score: int = 0  # Minimum trust score of service provider
-    max_price: Optional[Decimal] = None  # Maximum price filter
+    category_name: Optional[str] = None
+    location: Optional[str] = None
+    max_distance_km: int = Field(default=10, ge=1, le=100)
+    min_trust_score: int = Field(default=0, ge=0)
+    max_price: Optional[float] = Field(default=None, ge=0)
+    
+    @field_validator('category_name')
+    @classmethod
+    def validate_category_name(cls, v: Optional[str]) -> Optional[str]:
+        """Clean and validate category name"""
+        if v is None:
+            return v
+        
+        cleaned = v.strip()
+        if len(cleaned) < 2:
+            raise ValueError('Category name must be at least 2 characters')
+        
+        return cleaned
+    
+    @field_validator('location')
+    @classmethod
+    def validate_location(cls, v: Optional[str]) -> Optional[str]:
+        """Clean and validate location"""
+        if v is None:
+            return v
+        
+        cleaned = v.strip()
+        if len(cleaned) < 2:
+            raise ValueError('Location must be at least 2 characters')
+        
+        return cleaned

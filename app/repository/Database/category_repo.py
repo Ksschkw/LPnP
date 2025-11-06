@@ -42,3 +42,11 @@ class CategoryRepository:
     def get_by_name(self, name: str) -> ServiceCategory:
         """Find category by name (case-sensitive)"""
         return self.db.query(ServiceCategory).filter(ServiceCategory.name == name).first()
+
+    # NEW METHOD FOR SMART SEARCH
+    def search_by_name(self, query: str, limit: int = 10) -> list[ServiceCategory]:
+        """Search categories by name for autocomplete"""
+        return (self.db.query(ServiceCategory)
+                .filter(ServiceCategory.name.ilike(f"%{query}%"))
+                .limit(limit)
+                .all())

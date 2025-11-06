@@ -1,7 +1,7 @@
 from app.repository.Database.service_repo import ServiceRepository
 from app.repository.Database.category_repo import CategoryRepository
 from app.models.Requests.service_requests import ServiceCreateRequest
-from app.models.Responses.service_responses import ServiceBaseResponse, ServiceDetailResponse #ServiceResponse
+from app.models.Responses.service_responses import ServiceBaseResponse, ServiceDetailResponse
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,11 +20,6 @@ class ServiceService:
             return None
         return ServiceDetailResponse.model_validate(service)
     
-    # def get_services_by_seller(self, seller_id: str, skip: int = 0, limit: int = 100) -> list[ServiceBaseResponse]:
-    #     """Get all services offered by a specific user"""
-    #     services = self.service_repo.get_by_seller(seller_id, skip, limit)
-    #     return [ServiceBaseResponse.model_validate(service) for service in services]
-
     def get_services_by_seller(self, seller_id: str, skip: int = 0, limit: int = 100) -> list[ServiceBaseResponse]:
         """Get all services offered by a specific user"""
         logger.info(f"Looking for services by seller: {seller_id}")
@@ -82,7 +77,6 @@ class ServiceService:
         
         # Create the service
         service = self.service_repo.create(service_data, seller_id, service_data.category_name)
-        # logger.info(f"New service created: {service.title} by seller {seller_id}")
         logger.info(f"Service created: {service.id} - {service.title} by seller {seller_id}")
         return ServiceDetailResponse.model_validate(service)
     
@@ -120,3 +114,70 @@ class ServiceService:
             logger.info(f"Service auto-activated from vouches: {service_id}")
         
         return ServiceDetailResponse.model_validate(service)
+
+    # NEW SMART SEARCH METHOD
+    def search_services(
+        self,
+        category_name: str = None,
+        location: str = None,
+        max_distance_km: int = 10,
+        min_trust_score: int = 0,
+        max_price: float = None,
+        skip: int = 0,
+        limit: int = 100
+    ) -> list[ServiceBaseResponse]:
+        """
+        Smart service search with intelligent matching
+        - Fuzzy category name matching
+        - Intelligent location search with suggestions
+        - Error handling for typos and variations
+        """
+        
+        try:
+            # Validate inputs
+            if max_distance_km < 1 or max_distance_km > 100:
+                raise ValueError("Search radius must be between 1 and 100 km")
+            
+            if min_trust_score < 0:
+                raise ValueError("Trust score cannot be negative")
+            
+            if max_price and max_price < 0:
+                raise ValueError("Price cannot be negative")
+            
+            # Clean and normalize search inputs
+            cleaned_category = category_name.strip().lower() if category_name else None
+            cleaned_location = location.strip().lower() if location else None
+            
+            # Perform smart search
+            services = self.service_repo.search_services_by_filters(
+                category_name=cleaned_category,
+                location_query=cleaned_location,
+                max_distance_km=max_distance_km,
+                min_trust_score=min_trust_score,
+                max_price=max_price,
+                skip=skip,
+                limit=limit
+            )
+            
+            # If no results with filters, try relaxed search
+            if not services and (cleaned_category or cleaned_location):
+                logger.info(f"No exact matches found, trying relaxed search for: {cleaned_category}, {cleaned_location}")
+                
+                # Relax trust score for more results
+                relaxed_trust = max(0, min_trust_score - 10)
+                services = self.service_repo.search_services_by_filters(
+                    category_name=cleaned_category,
+                    location_query=cleaned_location,
+                    max_distance_km=max_distance_km + 5,  # Expand search radius
+                    min_trust_score=relaxed_trust,
+                    max_price=max_price,
+                    skip=skip,
+                    limit=limit
+                )
+            
+            return [ServiceBaseResponse.model_validate(service) for service in services]
+            
+        except Exception as e:
+            logger.error(f"Search error: {str(e)}")
+            # Return empty results instead of crashing
+            return []
