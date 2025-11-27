@@ -1,7 +1,7 @@
 // app.js - Updated with proper module initialization
 class LocaLeApp {
     constructor() {
-        this.apiBaseUrl = ''; // Use relative URLs
+        this.apiBaseUrl = 'http://127.0.0.1:8000'; // Use relative URLs
         this.currentUser = null;
         this.currentView = 'dashboard';
         this.modules = {};

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.database import engine, Base
+from app.config.database import engine, Base
 from app.models.entities import user, service, serviceCategory, job, vouch, review, dispute, payment, message, serviceServiceCategory
 
 # Import route files
@@ -33,9 +33,14 @@ app.add_middleware(
 app.include_router(user_routes.router)
 app.include_router(service_routes.router)
 from app.routes import job_routes, vouch_routes
-
 app.include_router(job_routes.router)
 app.include_router(vouch_routes.router)
+from app.routes import search_routes
+app.include_router(search_routes.router)
+from app.routes import payment_routes
+app.include_router(payment_routes.router)
+from app.routes import dispute_routes
+app.include_router(dispute_routes.router)
 #
 #ADDMMIINN
 app.include_router(admin_routes.router)

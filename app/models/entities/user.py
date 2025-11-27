@@ -1,7 +1,7 @@
-from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text
+from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, Numeric
 from sqlalchemy.sql import func
 import uuid
-from app.database import Base
+from app.config.database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -33,3 +33,16 @@ class User(Base):
     # Timestamps (Auto-managed)
     created_at = Column(DateTime, server_default=func.now())     # Auto-set on creation
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())  # Auto-update when changed
+
+    # NEW FIELDS FOR BADGE SYSTEM
+    badge_level = Column(String(20), default="newbie")  # newbie, trusted, verified, elite, legend
+    has_paid_badge = Column(Boolean, default=False)     # Whether they paid for Elite badge
+    badge_purchased_at = Column(DateTime, nullable=True) # When they bought Elite badge
+
+    # NEW: Earnings tracking
+    total_earnings = Column(Numeric(12, 2), default=0)              # Total money earned
+    available_balance = Column(Numeric(12, 2), default=0)           # Money they can withdraw
+    pending_balance = Column(Numeric(12, 2), default=0)             # Money in escrow
+    
+    # Platform stats (for admin)
+    total_platform_earnings = Column(Numeric(12, 2), default=0)     # Your total commission

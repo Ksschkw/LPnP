@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.dependencies import get_job_service
-from app.auth import get_current_user
+from app.utilities.auth import get_current_user
 from app.models.entities.user import User
 from app.models.Requests.job_requests import JobCreateRequest
 from app.models.Responses.job_responses import JobDetailResponse, JobBaseResponse

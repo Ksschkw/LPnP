@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 # from app.database import get_db
-from app.auth import get_current_user
+from app.utilities.auth import get_current_user
 from app.models.entities.user import User
 from app.service.user_service import UserService
 from app.models.Requests.user_requests import UserCreateRequest, UserLoginRequest, UserUpdateRequest
@@ -47,6 +47,24 @@ async def update_my_profile(
     if not user:
         raise HTTPException(404, "User not found")
     return user
+
+#BADGE
+@router.post("/me/purchase-badge", response_model=UserBaseResponse)
+async def purchase_elite_badge(
+    current_user: User = Depends(get_current_user),
+    user_service: UserService = Depends(get_user_service)
+):
+    """Purchase Elite badge (mock payment for now)"""
+    # In real implementation, integrate with payment service
+    success = user_service.purchase_elite_badge(current_user.id)
+    
+    if not success:
+        raise HTTPException(
+            status_code=400,
+            detail="You need NIN verification and 100+ trust score to purchase Elite badge"
+        )
+    
+    return user_service.get_user(current_user.id)
 
 @router.post("/", response_model=UserBaseResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user_data: UserCreateRequest, user_service: UserService = Depends(get_user_service)):

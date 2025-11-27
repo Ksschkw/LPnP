@@ -38,6 +38,9 @@ class ServiceBaseResponse(BaseModel):
     #     from_attributes = True
     model_config = ConfigDict(from_attributes=True)
 
+    # Ensure seller includes badge info
+    seller: UserBaseResponse  # This now includes badge_level and badge_icon
+
 class ServiceDetailResponse(ServiceBaseResponse):
     """Detailed service information including relationships"""
     

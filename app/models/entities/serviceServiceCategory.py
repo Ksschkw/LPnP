@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime, ForeignKey
 from sqlalchemy.sql import func
 import uuid
-from app.database import Base
+from app.config.database import Base
 
 class ServiceServiceCategory(Base):
     __tablename__ = "service_service_categories"

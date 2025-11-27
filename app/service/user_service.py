@@ -4,8 +4,9 @@ from app.models.Requests.user_requests import UserCreateRequest, UserLoginReques
 from app.models.Responses.user_responses import UserBaseResponse, UserDetailResponse
 import logging
 
-from app.auth import create_access_token
+from app.utilities.auth import create_access_token
 from app.models.Responses.user_responses import UserWithTokenResponse
+from app.service.badge_service import BadgeService
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class UserService:
     
     def __init__(self, db):
         self.user_repo = UserRepository(db)
+        self.badge_service = BadgeService(db)  # Add this
     
     def get_user(self, user_id: str) -> UserBaseResponse:
         """Get user details by ID"""
@@ -108,15 +110,25 @@ class UserService:
         """Remove user account from the system"""
         return self.user_repo.delete(user_id)
     
+    def purchase_elite_badge(self, user_id: str) -> bool:
+        return self.badge_service.purchase_elite_badge(user_id)
+
     def update_trust_points(self, user_id: str, points: int) -> UserBaseResponse:
-        """Increase or decrease user's trust score"""
-        if points < 0:
-            raise ValueError("Trust score cannot be negative")
-        
         user = self.user_repo.update_trust_score(user_id, points)
-        if not user:
-            return None
+        if user:
+            # Recalculate badge after trust score change
+            self.badge_service.update_user_badge(user_id)
         return UserBaseResponse.model_validate(user)
+    
+    # def update_trust_points(self, user_id: str, points: int) -> UserBaseResponse:
+    #     """Increase or decrease user's trust score"""
+    #     if points < 0:
+    #         raise ValueError("Trust score cannot be negative")
+        
+    #     user = self.user_repo.update_trust_score(user_id, points)
+    #     if not user:
+    #         return None
+    #     return UserBaseResponse.model_validate(user)
     
     def get_user_detail(self, user_id: str) -> UserDetailResponse:
         """Get user details by ID with all fields"""

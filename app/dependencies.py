@@ -1,6 +1,6 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.config.database import get_db
 
 # === USER SERVICE ===
 from app.service.user_service import UserService
@@ -21,7 +21,7 @@ class ServiceServiceDependency:
 
 get_service_service = ServiceServiceDependency()
 
-# Add these to your existing dependencies.py
+# Added these to existing dependencies.py
 from app.repository.Database.service_repo import ServiceRepository
 from app.repository.Database.category_repo import CategoryRepository
 
@@ -39,3 +39,21 @@ def get_job_service(db: Session = Depends(get_db)):
 
 def get_vouch_service(db: Session = Depends(get_db)):
     return VouchService(db)
+
+# payment service dependency
+from app.service.payment_service import PaymentService
+
+def get_payment_service(db: Session = Depends(get_db)):
+    return PaymentService(db)
+
+# dispute service dependency
+from app.service.dispute_service import DisputeService
+
+def get_dispute_service(db: Session = Depends(get_db)):
+    return DisputeService(db)
+
+# Search service dependency
+from app.service.search_service import SearchService
+
+def get_search_service(db: Session = Depends(get_db)):
+    return SearchService(db)

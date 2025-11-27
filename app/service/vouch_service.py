@@ -12,21 +12,18 @@ class VouchService:
         self.service_repo = ServiceRepository(db)
     
     def create_vouch(self, service_id: str, vouch_data: VouchCreateRequest, user_id: str = None, user_phone: str = None) -> VouchResponse:
-        """Create a vouch with automatic type detection and duplicate prevention"""
+        """Create a vouch with automatic type detection"""
         # Verify service exists
         service = self.service_repo.get_by_id(service_id)
         if not service:
             raise ValueError("Service not found")
         
         # Determine vouch type and required fields
-        if user_id:
+        if user_id and user_phone:
             # LOGGED-IN USER: Trusted vouch (50 points)
             points = 50
             vouch_type = "trusted"
             voucher_phone = user_phone
-            
-            if not user_phone:
-                raise ValueError("User phone required for logged-in vouches")
             
             # Check if user already vouched for this service
             existing_user_vouches = self.vouch_repo.get_user_vouches_for_service(service_id, user_id)
@@ -44,10 +41,11 @@ class VouchService:
             
             voucher_phone = vouch_data.voucher_phone
             
-            # ✅ CRITICAL FIX: Check if this phone number already vouched for this service
+            # Check if this phone number already vouched for this service
             existing_phone_vouches = self.vouch_repo.get_phone_vouches_for_service(service_id, voucher_phone)
             if existing_phone_vouches:
                 raise ValueError("This phone number has already vouched for this service")
+        
         
         # Create vouch data
         vouch_dict = {

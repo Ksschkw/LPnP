@@ -4,6 +4,8 @@ from app.models.Requests.job_requests import JobCreateRequest
 from app.models.Responses.job_responses import JobBaseResponse, JobDetailResponse
 import logging
 
+from app.service.payment_service import PaymentService
+
 logger = logging.getLogger(__name__)
 
 class JobService:
@@ -41,19 +43,42 @@ class JobService:
         jobs = self.job_repo.get_jobs_for_seller(seller_id)
         return [JobDetailResponse.model_validate(job) for job in jobs]
     
+    # def update_job_status(self, job_id: str, status: str, user_id: str) -> JobDetailResponse:
     def update_job_status(self, job_id: str, status: str, user_id: str) -> JobDetailResponse:
-        """Update job status with permission check"""
+        """Update job status with payment integration - ROBUST VERSION"""
+        # Validate status first
+        valid_statuses = ['pending', 'accepted', 'in_progress', 'completed', 'cancelled']
+        if status not in valid_statuses:
+            raise ValueError(f"Invalid status. Must be one of: {valid_statuses}")
+        
         job = self.job_repo.get_by_id(job_id)
         if not job:
             raise ValueError("Job not found")
         
-        # Check permissions - only seller can accept/update their jobs
+        # Check permissions
         if user_id != job.service.seller_id:
             raise ValueError("You can only update jobs for your own services")
         
-        job = self.job_repo.update_status(job_id, status)
-        return JobDetailResponse.model_validate(job)
-    
+        try:
+            # Handle payment creation when job is accepted
+            if status == 'accepted' and job.status == 'pending':
+                from app.service.payment_service import PaymentService
+                payment_service = PaymentService(self.db)
+                payment_service.create_payment_for_job(job_id)
+            
+            # Handle payment release when job is completed
+            if status == 'completed' and job.status in ['accepted', 'in_progress']:
+                from app.service.payment_service import PaymentService
+                payment_service = PaymentService(self.db)
+                payment_service.release_payment_to_seller(job_id)
+            
+            job = self.job_repo.update_status(job_id, status)
+            return JobDetailResponse.model_validate(job)
+            
+        except Exception as e:
+            logger.error(f"Error updating job status: {e}")
+            raise ValueError(f"Failed to update job status: {str(e)}")
+        
     def get_job_details(self, job_id: str, user_id: str) -> JobDetailResponse:
         """Get job details - only participants can view"""
         job = self.job_repo.get_by_id(job_id)

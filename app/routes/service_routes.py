@@ -13,7 +13,7 @@ from app.repository.Database.category_repo import CategoryRepository
 from app.models.entities.user import User
 from app.models.Requests.service_requests import ServiceCreateRequest, ServiceUpdateRequest
 from app.models.Responses.service_responses import ServiceBaseResponse, ServiceDetailResponse
-from app.auth import get_current_user
+from app.utilities.auth import get_current_user
 
 router = APIRouter(prefix="/services", tags=["services"])
 
@@ -123,76 +123,76 @@ def activate_service(service_id: str, service_service: ServiceService = Depends(
         )
     return service
 
-# NEW SMART SEARCH ENDPOINTS
-@router.get("/search/", response_model=List[ServiceBaseResponse])
-def search_services(
-    category_name: Optional[str] = None,
-    location: Optional[str] = None,
-    max_distance_km: int = 10,
-    min_trust_score: int = 0,
-    max_price: Optional[float] = None,
-    service_service: ServiceService = Depends(get_service_service)
-):
-    """
-    Smart service search with intelligent matching
+# # NEW SMART SEARCH ENDPOINTS
+# @router.get("/search/", response_model=List[ServiceBaseResponse])
+# def search_services(
+#     category_name: Optional[str] = None,
+#     location: Optional[str] = None,
+#     max_distance_km: int = 10,
+#     min_trust_score: int = 0,
+#     max_price: Optional[float] = None,
+#     service_service: ServiceService = Depends(get_service_service)
+# ):
+#     """
+#     Smart service search with intelligent matching
     
-    Features:
-    - Search by category name (not ID) with fuzzy matching
-    - Location search with typo tolerance and suggestions
-    - Automatic nearby suggestions when exact matches are few
-    - Error handling for invalid inputs
-    """
+#     Features:
+#     - Search by category name (not ID) with fuzzy matching
+#     - Location search with typo tolerance and suggestions
+#     - Automatic nearby suggestions when exact matches are few
+#     - Error handling for invalid inputs
+#     """
     
-    try:
-        results = service_service.search_services(
-            category_name=category_name,
-            location=location,
-            max_distance_km=max_distance_km,
-            min_trust_score=min_trust_score,
-            max_price=max_price
-        )
+#     try:
+#         results = service_service.search_services(
+#             category_name=category_name,
+#             location=location,
+#             max_distance_km=max_distance_km,
+#             min_trust_score=min_trust_score,
+#             max_price=max_price
+#         )
         
-        # Log search performance
-        logger.info(f"Search completed: category='{category_name}', location='{location}', results={len(results)}")
+#         # Log search performance
+#         logger.info(f"Search completed: category='{category_name}', location='{location}', results={len(results)}")
         
-        return results
+#         return results
         
-    except ValueError as e:
-        # Handle validation errors gracefully
-        logger.warning(f"Search validation error: {str(e)}")
-        raise HTTPException(
-            status_code=400,
-            detail=str(e)
-        )
-    except Exception as e:
-        # Handle unexpected errors gracefully
-        logger.error(f"Search system error: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Search service temporarily unavailable. Please try again."
-        )
+#     except ValueError as e:
+#         # Handle validation errors gracefully
+#         logger.warning(f"Search validation error: {str(e)}")
+#         raise HTTPException(
+#             status_code=400,
+#             detail=str(e)
+#         )
+#     except Exception as e:
+#         # Handle unexpected errors gracefully
+#         logger.error(f"Search system error: {str(e)}")
+#         raise HTTPException(
+#             status_code=500,
+#             detail="Search service temporarily unavailable. Please try again."
+#         )
 
-@router.get("/categories/search/")
-def search_categories(
-    query: str,
-    category_repo: CategoryRepository = Depends(get_category_repo)
-):
-    """Search categories by name for autocomplete"""
-    if len(query.strip()) < 2:
-        return []
+# @router.get("/categories/search/")
+# def search_categories(
+#     query: str,
+#     category_repo: CategoryRepository = Depends(get_category_repo)
+# ):
+#     """Search categories by name for autocomplete"""
+#     if len(query.strip()) < 2:
+#         return []
     
-    categories = category_repo.search_by_name(query)
-    return [{"id": cat.id, "name": cat.name} for cat in categories]
+#     categories = category_repo.search_by_name(query)
+#     return [{"id": cat.id, "name": cat.name} for cat in categories]
 
-@router.get("/locations/suggestions/")
-def get_location_suggestions(
-    query: str,
-    service_repo: ServiceRepository = Depends(get_service_repo)
-):
-    """Get location suggestions for autocomplete"""
-    if len(query.strip()) < 2:
-        return []
+# @router.get("/locations/suggestions/")
+# def get_location_suggestions(
+#     query: str,
+#     service_repo: ServiceRepository = Depends(get_service_repo)
+# ):
+#     """Get location suggestions for autocomplete"""
+#     if len(query.strip()) < 2:
+#         return []
     
-    # Get unique locations from services
-    locations = service_repo.get_location_suggestions(query)
-    return [loc for loc in locations if loc]
+#     # Get unique locations from services
+#     locations = service_repo.get_location_suggestions(query)
+#     return [loc for loc in locations if loc]

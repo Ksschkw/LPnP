@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, Boolean, DateTime, Text, Foreign
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
-from app.database import Base
+from app.config.database import Base
 
 class Vouch(Base):
     __tablename__ = "vouches"

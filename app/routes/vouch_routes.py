@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
-from app.dependencies import get_vouch_service, get_db
-from app.auth import get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+from app.dependencies import get_vouch_service
+from app.utilities.auth import get_current_user
 from app.models.entities.user import User
 from app.models.Requests.vouch_requests import VouchCreateRequest
 from app.models.Responses.vouch_responses import VouchResponse
-from app.repository.Database.user_repo import UserRepository
 from typing import List, Optional
 
 router = APIRouter(prefix="/vouches", tags=["vouches"])
@@ -13,8 +12,7 @@ router = APIRouter(prefix="/vouches", tags=["vouches"])
 async def create_vouch(
     service_id: str,
     vouch_data: VouchCreateRequest,
-    authorization: Optional[str] = Header(None),  # Manually check for auth header
-    db = Depends(get_db),
+    current_user: Optional[User] = Depends(get_current_user),  # Optional - can be None if not logged in
     vouch_service=Depends(get_vouch_service)
 ):
     """
@@ -31,25 +29,8 @@ async def create_vouch(
     - Comment is optional
     """
     try:
-        user_id = None
-        user_phone = None
-        
-        # Manually check for authorization header
-        if authorization and authorization.startswith("Bearer "):
-            try:
-                token = authorization.replace("Bearer ", "")
-                from app.auth import verify_access_token
-                payload = verify_access_token(token)
-                user_id = payload.get("sub")
-                
-                if user_id:
-                    user_repo = UserRepository(db)
-                    user = user_repo.get_by_id(user_id)
-                    if user:
-                        user_phone = user.phone
-            except Exception:
-                # If token is invalid, treat as non-logged-in
-                pass
+        user_id = current_user.id if current_user else None
+        user_phone = current_user.phone if current_user else None
         
         return vouch_service.create_vouch(service_id, vouch_data, user_id, user_phone)
     except ValueError as e:

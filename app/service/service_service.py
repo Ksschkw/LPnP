@@ -175,7 +175,28 @@ class ServiceService:
                     limit=limit
                 )
             
-            return [ServiceBaseResponse.model_validate(service) for service in services]
+            # ✅ CONVERT TO RESPONSE MODELS FIRST
+            service_responses = [ServiceBaseResponse.model_validate(service) for service in services]
+            
+            # ✅ NOW SORT BY BADGE PRIORITY (after conversion to response models)
+            def get_badge_priority(service_response):
+                badge_priorities = {
+                    "legend": 5,
+                    "elite": 4, 
+                    "verified": 3,
+                    "trusted": 2,
+                    "newbie": 1
+                }
+                seller_badge = service_response.seller.badge_level
+                return badge_priorities.get(seller_badge, 0)
+            
+            # Sort: higher badges first, then trust points
+            service_responses.sort(key=lambda s: (
+                -get_badge_priority(s),  # Higher badges first
+                -s.trust_points          # Then higher trust points
+            ))
+            
+            return service_responses
             
         except Exception as e:
             logger.error(f"Search error: {str(e)}")

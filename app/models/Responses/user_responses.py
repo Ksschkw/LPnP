@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, computed_field
 
 from typing import Optional
 from datetime import datetime
@@ -15,6 +15,23 @@ class UserBaseResponse(BaseModel):
     verification_level: int  # 0=basic, 1=NIN, 2=bank, 3=address verified
     is_online: bool  # Whether user is currently online
     last_active: datetime  # When user was last active (in UTC)
+
+    #FOR BADGE SYSTEM
+    badge_level: str  # newbie, trusted, verified, elite, legend
+    # badge_icon: str   # emoji representation
+    has_paid_badge: bool = False
+    
+    @computed_field
+    @property
+    def badge_icon(self) -> str:
+        badges = {
+            "newbie": "🌱",
+            "trusted": "⭐", 
+            "verified": "✅",
+            "elite": "🏆",
+            "legend": "🔥"
+        }
+        return badges.get(self.badge_level, "🌱")
     
     # class Config:
     #     from_attributes = True  # Allows creating from SQLAlchemy models
