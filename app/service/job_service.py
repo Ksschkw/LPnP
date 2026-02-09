@@ -70,6 +70,19 @@ class JobService:
             if status == 'completed' and job.status in ['accepted', 'in_progress']:
                 from app.service.payment_service import PaymentService
                 payment_service = PaymentService(self.db)
+                #Require buyer confirmation before releasing payment
+                if not hasattr(job, 'buyer_confirmed') or not job.buyer_confirmed:
+                    # Mark as pending completion, wait for buyer confirmation
+                    job = self.job_repo.update_status(job_id, 'pending_completion')
+                    # Notify buyer to confirm completion
+                    self._notify_buyer_completion(job_id)
+                    return JobDetailResponse.model_validate(job)
+                
+                # OPTION 2: 24-hour automatic release if no dispute -- This is dumb because people can forget
+                # completion_time = datetime.utcnow()
+                # if completion_time - job.started_at < timedelta(hours=24):
+                #     raise ValueError("24-hour waiting period for disputes before payment release")
+                
                 payment_service.release_payment_to_seller(job_id)
             
             job = self.job_repo.update_status(job_id, status)

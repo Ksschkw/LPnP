@@ -61,3 +61,34 @@ async def get_job_details(
         return job_service.get_job_details(job_id, current_user.id)
     except ValueError as e:
         raise HTTPException(400, detail=str(e))
+    
+@router.post("/{job_id}/confirm-completion")
+async def confirm_job_completion(
+    job_id: str,
+    current_user: User = Depends(get_current_user),
+    job_service=Depends(get_job_service)
+):
+    """Buyer confirms job completion and releases payment to seller"""
+    try:
+        job = job_service.get_job_details(job_id, current_user.id)
+        
+        # Verify user is the buyer
+        if job.buyer_id != current_user.id:
+            raise HTTPException(403, "Only the buyer can confirm completion")
+        
+        # Verify job is in pending completion state
+        if job.status != 'pending_completion':
+            raise HTTPException(400, "Job is not awaiting completion confirmation")
+        
+        # Release payment to seller
+        from app.service.payment_service import PaymentService
+        payment_service = PaymentService(job_service.db)  # You'll need to expose db
+        payment_service.release_payment_to_seller(job_id)
+        
+        # Update job status to completed
+        job = job_service.job_repo.update_status(job_id, 'completed')
+        
+        return {"message": "Job completion confirmed, payment released to seller"}
+        
+    except ValueError as e:
+        raise HTTPException(400, detail=str(e))

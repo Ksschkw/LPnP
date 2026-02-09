@@ -23,40 +23,6 @@ def create_access_token(data: dict):
     logger.info(f"JWT created for user {data.get('sub')} - expires in {settings.ACCESS_TOKEN_EXPIRE_MINUTES} mins")
     return token
 
-# async def get_current_user(
-#     credentials: HTTPAuthorizationCredentials = Depends(security),
-#     db: Session = Depends(get_db)
-# ) -> User:
-#     """Validate JWT and return actual user from database"""
-#     if not credentials:
-#         logger.warning("No Authorization header")
-#         raise HTTPException(status_code=401, detail="Authorization header missing")
-    
-#     token = credentials.credentials
-#     try:
-#         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-#         user_id: str = payload.get("sub")
-#         if not user_id:
-#             logger.warning("JWT missing 'sub' claim")
-#             raise HTTPException(status_code=401, detail="Invalid token")
-        
-#         logger.info(f"JWT validated for user {user_id}")
-        
-#         # To Fetch the actual user from the database
-#         user_repo = UserRepository(db)
-#         user = user_repo.get_by_id(user_id)
-        
-#         if not user:
-#             logger.warning(f"User not found in database: {user_id}")
-#             raise HTTPException(status_code=401, detail="User not found")
-        
-#         logger.info(f"User found: {user.id} - {user.name}")
-#         return user
-    
-#     except JWTError as e:
-#         logger.error(f"JWT validation failed: {e}")
-#         raise HTTPException(status_code=401, detail="Invalid token")
-
 from typing import Optional
 
 logger = logging.getLogger(__name__)

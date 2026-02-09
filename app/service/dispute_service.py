@@ -18,8 +18,9 @@ class DisputeService:
         self.payment_service = PaymentService(db)
         self.badge_service = BadgeService(db)
     
+    # def create_dispute(self, dispute_data: dict) -> Dispute:
     def create_dispute(self, dispute_data: dict) -> Dispute:
-        """Create a new dispute with validation"""
+        """Create a new dispute with validation - SECURE VERSION"""
         job_id = dispute_data['job_id']
         raised_by_id = dispute_data['raised_by_id']
         
@@ -32,18 +33,28 @@ class DisputeService:
         if raised_by_id not in [job.buyer_id, job.service.seller_id]:
             raise ValueError("You can only raise disputes for jobs you're involved in")
         
+        # 🚨 CRITICAL FIX: Check if payment is already released
+        payment = self.payment_repo.get_by_job_id(job_id)
+        if payment and payment.status == 'released':
+            raise ValueError("Cannot dispute job after payment has been released to seller")
+        
         # Check if dispute already exists for this job
         existing_disputes = self.dispute_repo.get_by_job_id(job_id)
         if any(d.status in ['open', 'in_progress'] for d in existing_disputes):
             raise ValueError("There is already an active dispute for this job")
         
-        # Validate job is in a disputable state
-        if job.status not in ['accepted', 'in_progress', 'completed']:
-            raise ValueError("You can only dispute jobs that are in progress or completed")
+        # 🚨 CRITICAL FIX: Only allow disputes BEFORE completion confirmation
+        if job.status not in ['accepted', 'in_progress', 'pending_completion']:
+            raise ValueError("You can only dispute jobs that are in progress or awaiting completion confirmation")
         
         # Create the dispute
         dispute = self.dispute_repo.create(dispute_data)
         logger.info(f"Dispute created: {dispute.id} for job {job_id} by user {raised_by_id}")
+        
+        # 🚨 AUTO-PAUSE PAYMENT RELEASE if dispute created during pending_completion
+        if job.status == 'pending_completion':
+            self.job_repo.update_status(job_id, 'disputed')
+            logger.info(f"Job {job_id} paused due to dispute")
         
         return dispute
     
